@@ -40,7 +40,6 @@
 #include "fastio.h"
 #include "utility.h"
 
-
 #ifdef USBCON
   #include "HardwareSerial.h"
   #if ENABLED(BLUETOOTH)
@@ -223,6 +222,7 @@ void manage_inactivity(bool ignore_stepper_queue = false);
 #define _AXIS(AXIS) AXIS ##_AXIS
 
 void enable_all_steppers();
+void disable_e_steppers();
 void disable_all_steppers();
 
 void FlushSerialRequestResend();

@@ -450,17 +450,12 @@ void Planner::check_axes_activity() {
     if (!axis_active[Z_AXIS]) disable_z();
   #endif
   #if ENABLED(DISABLE_E)
-    if (!axis_active[E_AXIS]) {
-      disable_e0();
-      disable_e1();
-      disable_e2();
-      disable_e3();
-    }
+    if (!axis_active[E_AXIS]) disable_e_steppers();
   #endif
 
   #if FAN_COUNT > 0
 
-    #if defined(FAN_MIN_PWM)
+    #ifdef FAN_MIN_PWM
       #define CALC_FAN_SPEED(f) (tail_fan_speed[f] ? ( FAN_MIN_PWM + (tail_fan_speed[f] * (255 - FAN_MIN_PWM)) / 255 ) : 0)
     #else
       #define CALC_FAN_SPEED(f) tail_fan_speed[f]
@@ -535,7 +530,7 @@ void Planner::check_axes_activity() {
   #endif
 }
 
-#if PLANNER_LEVELING
+#if PLANNER_LEVELING && DISABLED(AUTO_BED_LEVELING_UBL)
   /**
    * lx, ly, lz - logical (cartesian, not delta) positions in mm
    */
@@ -639,7 +634,7 @@ void Planner::check_axes_activity() {
     #endif
   }
 
-#endif // PLANNER_LEVELING
+#endif // PLANNER_LEVELING && !AUTO_BED_LEVELING_UBL
 
 /**
  * Planner::_buffer_line
@@ -1413,7 +1408,7 @@ void Planner::_set_position_mm(const float &a, const float &b, const float &c, c
 }
 
 void Planner::set_position_mm_kinematic(const float position[NUM_AXIS]) {
-  #if PLANNER_LEVELING
+  #if PLANNER_LEVELING && DISABLED(AUTO_BED_LEVELING_UBL)
     float lpos[XYZ] = { position[X_AXIS], position[Y_AXIS], position[Z_AXIS] };
     apply_leveling(lpos);
   #else
